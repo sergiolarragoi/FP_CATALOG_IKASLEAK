@@ -1,13 +1,15 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.1
--- http://www.phpmyadmin.net
+-- version 4.8.3
+-- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 21-11-2018 a las 21:42:54
--- Versión del servidor: 10.1.19-MariaDB
--- Versión de PHP: 5.6.28
+-- Tiempo de generación: 23-11-2018 a las 15:02:28
+-- Versión del servidor: 10.1.35-MariaDB
+-- Versión de PHP: 7.2.9
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -19,6 +21,36 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `oferta_fp`
 --
+CREATE DATABASE IF NOT EXISTS `oferta_fp` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_spanish_ci;
+USE `oferta_fp`;
+
+DELIMITER $$
+--
+-- Procedimientos
+--
+DROP PROCEDURE IF EXISTS `spGetCyclesByFamily`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spGetCyclesByFamily` (IN `codFamily` VARCHAR(3))  NO SQL
+SELECT * FROM ciclos WHERE cod_familia=codFamily$$
+
+DROP PROCEDURE IF EXISTS `spGetListFamily`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spGetListFamily` ()  NO SQL
+SELECT * FROM familias$$
+
+DROP PROCEDURE IF EXISTS `spGetNameFamily`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spGetNameFamily` (IN `_codF` VARCHAR(3))  NO SQL
+SELECT
+    `nom_familia_eu`,
+    `nom_familia_es`
+FROM
+    familias
+WHERE
+    cod_familia = _codF$$
+
+DROP PROCEDURE IF EXISTS `spSelectTabla`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spSelectTabla` (IN `_codCiclo` VARCHAR(5))  NO SQL
+SELECT centros.nom_centro, centros.municipio, centros.territorio, oferta.modelo , oferta.modelo, oferta.turno FROM `centros` JOIN oferta on centros.cod_centro = oferta.cod_centro JOIN ciclos on oferta.cod_ciclo = ciclos.cod_ciclo WHERE ciclos.cod_ciclo = _codClico$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -26,6 +58,7 @@ SET time_zone = "+00:00";
 -- Estructura de tabla para la tabla `centros`
 --
 
+DROP TABLE IF EXISTS `centros`;
 CREATE TABLE `centros` (
   `territorio` varchar(12) COLLATE utf8_spanish_ci DEFAULT NULL,
   `dependencia` varchar(18) COLLATE utf8_spanish_ci DEFAULT NULL,
@@ -202,6 +235,7 @@ INSERT INTO `centros` (`territorio`, `dependencia`, `cod_centro`, `nom_centro`, 
 -- Estructura de tabla para la tabla `ciclos`
 --
 
+DROP TABLE IF EXISTS `ciclos`;
 CREATE TABLE `ciclos` (
   `cod_ciclo` varchar(5) COLLATE utf8_spanish_ci NOT NULL,
   `cod_familia` varchar(3) COLLATE utf8_spanish_ci NOT NULL,
@@ -330,6 +364,7 @@ INSERT INTO `ciclos` (`cod_ciclo`, `cod_familia`, `tipo`, `nom_ciclo_es`, `nom_c
 -- Estructura de tabla para la tabla `familias`
 --
 
+DROP TABLE IF EXISTS `familias`;
 CREATE TABLE `familias` (
   `cod_familia` varchar(3) COLLATE utf8_spanish_ci NOT NULL,
   `nom_familia_eu` varchar(40) COLLATE utf8_spanish_ci NOT NULL,
@@ -371,6 +406,7 @@ INSERT INTO `familias` (`cod_familia`, `nom_familia_eu`, `nom_familia_es`) VALUE
 -- Estructura de tabla para la tabla `oferta`
 --
 
+DROP TABLE IF EXISTS `oferta`;
 CREATE TABLE `oferta` (
   `codigo` int(3) NOT NULL DEFAULT '0',
   `cod_ciclo` varchar(5) CHARACTER SET utf8 COLLATE utf8_spanish_ci DEFAULT NULL,
@@ -1202,6 +1238,7 @@ ALTER TABLE `ciclos`
 ALTER TABLE `oferta`
   ADD CONSTRAINT `oferta_ibfk_1` FOREIGN KEY (`cod_centro`) REFERENCES `centros` (`cod_centro`),
   ADD CONSTRAINT `oferta_ibfk_2` FOREIGN KEY (`cod_ciclo`) REFERENCES `ciclos` (`cod_ciclo`);
+COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

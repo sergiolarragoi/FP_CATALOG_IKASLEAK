@@ -23,6 +23,7 @@ class familyModel extends familyClass {
             echo $e->getMessage();
         }
     }
+
     function getList() {
         return $this->list;
     }
@@ -31,7 +32,7 @@ class familyModel extends familyClass {
         $this->list = $list;
     }
 
-        public function getListFamily() {
+    public function getListFamily() {
         $this->OpenConnect();
         $sql = "CALL spGetListFamily()";
         $this->list = array();
@@ -46,6 +47,22 @@ class familyModel extends familyClass {
             array_push($this->list, $newFamily);
         }
 
+        mysqli_free_result($result);
+
+        $this->CloseConnect();
+    }
+
+    public function selectTitulos($codFamily) {
+
+        $this->OpenConnect();
+        $sql = "CALL spGetNameFamily('$codFamily')";
+
+        $result = $this->link->query($sql);
+
+        while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+            $this->setNom_familia_eu($row['nom_familia_eu']);
+            $this->setNom_familia_es($row['nom_familia_es']);
+        }
         mysqli_free_result($result);
 
         $this->CloseConnect();

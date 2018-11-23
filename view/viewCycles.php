@@ -8,10 +8,10 @@
     </head>
     <body>
         <h2>LANBIDE-ARLOAK / FAMILIAS PROFESIONALES</h2>
-        <h3><?php ?></h3>
-        
-        <h3>HEZIKETA-ZIKLOAK / CICLOS FORMATIVOS</h3>
-        <form name="formContinent" action="#" method="GET">
+        <h2><?php echo $family->getNom_familia_eu(); ?> / <?php echo $family->getNom_familia_es(); ?> </h2>
+
+        <h3>HEZIKETA-ZIKLOAK / CICLOS FORMATIVOS</h3><br>
+        <form name="formContinent" action="../controller/schoolsController.php?familyEu=<?php $family->getNom_familia_eu();?>&familyEs=<?php echo $family->getNom_familia_es(); ?>" method="GET">
             <select name ='cmbFamily'>
                 <?php
                 foreach ($listCycle as $cycle) {
@@ -21,7 +21,7 @@
                 }
                 ?>
             </select>
-            <br/><br/><input type="submit" value="Cycles View" name="btnOkContinent" />
+            <br/><br/><input type="submit" value="Schools View" name="btnOkContinent" />
         </form>
 
 
