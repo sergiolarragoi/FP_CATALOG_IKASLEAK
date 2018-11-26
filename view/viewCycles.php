@@ -11,8 +11,8 @@
         <h2><?php echo $family->getNom_familia_eu(); ?> / <?php echo $family->getNom_familia_es(); ?> </h2>
 
         <h3>HEZIKETA-ZIKLOAK / CICLOS FORMATIVOS</h3><br>
-        <form name="formContinent" action="../controller/schoolsController.php?familyEu=<?php $family->getNom_familia_eu();?>&familyEs=<?php echo $family->getNom_familia_es(); ?>" method="GET">
-            <select name ='cmbFamily'>
+        <form name="formContinent" action="../controller/schoolsController.php" method="GET">
+            <select name ='cmbCycle'>
                 <?php
                 foreach ($listCycle as $cycle) {
                     ?>      
@@ -21,7 +21,7 @@
                 }
                 ?>
             </select>
-            <br/><br/><input type="submit" value="Schools View" name="btnOkContinent" />
+            <br/><br/><input type="submit" value="Schools View" name="btnOkCycles" />
         </form>
 
 
