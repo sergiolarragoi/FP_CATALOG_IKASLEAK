@@ -34,6 +34,7 @@ class schoolModel extends schoolClass {
     function setList($list) {
         $this->list = $list;
     }
+
     function getOfferObject() {
         return $this->offerObject;
     }
@@ -58,7 +59,7 @@ class schoolModel extends schoolClass {
         $this->cycleObject = $cycleObject;
     }
 
-        public function getTabla($codCiclo) {
+    public function getTabla($codCiclo) {
 
         $this->OpenConnect();
         $sql = "CALL spSelectTabla('$codCiclo')";
@@ -80,21 +81,21 @@ class schoolModel extends schoolClass {
             include_once 'offerClass.php';
             include_once 'offerModel.php';
 
-            $new->offerObject = new offerClass(); //al igualar el objeto al modelo y como tiene extends tenemos la class para meter todo dentro de lo que viene de la BBDD
+            $new->offerObject = new offerClass();
             $new->offerObject->setModelo($row['modelo']);
             $new->offerObject->setTurno($row['turno']);
 
             include_once 'familyClass.php';
             include_once 'familyModel.php';
 
-            $new->familyObject = new familyClass(); //al igualar el objeto al modelo y como tiene extends tenemos la class para meter todo dentro de lo que viene de la BBDD
+            $new->familyObject = new familyClass();
             $new->familyObject->setNom_familia_eu($row['nom_familia_eu']);
             $new->familyObject->setNom_familia_es($row['nom_familia_es']);
 
             include_once 'cycleClass.php';
             include_once 'cycleModel.php';
 
-            $new->cycleObject = new cycleClass(); //al igualar el objeto al modelo y como tiene extends tenemos la class para meter todo dentro de lo que viene de la BBDD
+            $new->cycleObject = new cycleClass();
             $new->cycleObject->setNom_ciclo_eu($row['nom_ciclo_eu']);
             $new->cycleObject->setNom_ciclo_es($row['nom_ciclo_es']);
 
@@ -103,6 +104,22 @@ class schoolModel extends schoolClass {
             array_push($this->list, $new);
         }
         //var_dump($new);
+        mysqli_free_result($result);
+        $this->CloseConnect();
+    }
+
+    public function getNameCenter($codCentro) {
+
+        $this->OpenConnect();
+        $sql = "CALL spGetNameCenter($codCentro)";
+
+
+        $result = $this->link->query($sql);
+
+        while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+
+            $this->setNom_centro($row['nom_centro']);
+        }
         mysqli_free_result($result);
         $this->CloseConnect();
     }

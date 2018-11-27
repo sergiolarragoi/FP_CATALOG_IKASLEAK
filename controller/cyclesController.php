@@ -1,11 +1,7 @@
 <?php
 
-//include_once '../model/myClases.php';
-include_once '../model/connect_data.php';
-include_once '../model/cycleClass.php';
-include_once '../model/familyClass.php';
-include_once '../model/cycleModel.php';
-include_once '../model/familyModel.php';
+include_once '../model/myClases.php';
+
 
 $cycle = new cycleModel();
 $codFamily = filter_input(INPUT_GET, 'cmbFamily');
@@ -20,4 +16,4 @@ $family->selectTitulos($codFamily);
 
 
 
-include_once "../view/viewCycles.php";
+include_once '../view/viewCycles.php';

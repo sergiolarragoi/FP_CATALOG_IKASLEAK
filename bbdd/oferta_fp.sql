@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 23-11-2018 a las 15:02:28
+-- Tiempo de generación: 27-11-2018 a las 13:53:45
 -- Versión del servidor: 10.1.35-MariaDB
 -- Versión de PHP: 7.2.9
 
@@ -28,15 +28,28 @@ DELIMITER $$
 --
 -- Procedimientos
 --
-DROP PROCEDURE IF EXISTS `spGetCyclesByFamily`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spGetCyclesByFamily` (IN `codFamily` VARCHAR(3))  NO SQL
-SELECT * FROM ciclos WHERE cod_familia=codFamily$$
+SELECT
+    *
+FROM
+    ciclos
+WHERE
+    cod_familia = codFamily$$
 
-DROP PROCEDURE IF EXISTS `spGetListFamily`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spGetListFamily` ()  NO SQL
-SELECT * FROM familias$$
+SELECT
+    *
+FROM
+    familias$$
 
-DROP PROCEDURE IF EXISTS `spGetNameFamily`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spGetNameCenter` (IN `codCentro` INT(6))  NO SQL
+SELECT
+    `nom_centro`
+FROM
+    centros
+WHERE
+    `cod_centro` = codCentro$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spGetNameFamily` (IN `_codF` VARCHAR(3))  NO SQL
 SELECT
     `nom_familia_eu`,
@@ -46,9 +59,39 @@ FROM
 WHERE
     cod_familia = _codF$$
 
-DROP PROCEDURE IF EXISTS `spSelectTabla`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spSelectTabla` (IN `_codCiclo` VARCHAR(5))  NO SQL
-SELECT centros.nom_centro, centros.municipio, centros.territorio, oferta.modelo , oferta.modelo, oferta.turno FROM `centros` JOIN oferta on centros.cod_centro = oferta.cod_centro JOIN ciclos on oferta.cod_ciclo = ciclos.cod_ciclo WHERE ciclos.cod_ciclo = _codClico$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spSelectTabla` (IN `codigoCentro` VARCHAR(5))  NO SQL
+SELECT
+    centros.cod_centro,
+    centros.nom_centro,
+    centros.municipio,
+    centros.territorio,
+    oferta.modelo,
+    oferta.turno,
+    familias.nom_familia_eu,
+    familias.nom_familia_es,
+    ciclos.nom_ciclo_eu,
+    ciclos.nom_ciclo_es
+FROM
+    `centros`
+JOIN oferta ON centros.cod_centro = oferta.cod_centro
+JOIN ciclos ON oferta.cod_ciclo = ciclos.cod_ciclo
+JOIN familias ON ciclos.cod_familia = familias.cod_familia
+WHERE
+    ciclos.cod_ciclo = codigoCentro$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spViewCenters` (IN `codigoCentro` INT)  NO SQL
+SELECT
+    ciclos.nom_ciclo_eu,
+    ciclos.nom_ciclo_es,
+    familias.nom_familia_eu,
+    familias.nom_familia_es
+FROM
+    centros
+JOIN oferta ON centros.cod_centro = oferta.cod_centro
+JOIN ciclos ON oferta.cod_ciclo = ciclos.cod_ciclo
+JOIN familias ON ciclos.cod_familia = familias.cod_familia
+WHERE
+    centros.cod_centro = codigoCentro$$
 
 DELIMITER ;
 
@@ -58,7 +101,6 @@ DELIMITER ;
 -- Estructura de tabla para la tabla `centros`
 --
 
-DROP TABLE IF EXISTS `centros`;
 CREATE TABLE `centros` (
   `territorio` varchar(12) COLLATE utf8_spanish_ci DEFAULT NULL,
   `dependencia` varchar(18) COLLATE utf8_spanish_ci DEFAULT NULL,
@@ -235,7 +277,6 @@ INSERT INTO `centros` (`territorio`, `dependencia`, `cod_centro`, `nom_centro`, 
 -- Estructura de tabla para la tabla `ciclos`
 --
 
-DROP TABLE IF EXISTS `ciclos`;
 CREATE TABLE `ciclos` (
   `cod_ciclo` varchar(5) COLLATE utf8_spanish_ci NOT NULL,
   `cod_familia` varchar(3) COLLATE utf8_spanish_ci NOT NULL,
@@ -364,7 +405,6 @@ INSERT INTO `ciclos` (`cod_ciclo`, `cod_familia`, `tipo`, `nom_ciclo_es`, `nom_c
 -- Estructura de tabla para la tabla `familias`
 --
 
-DROP TABLE IF EXISTS `familias`;
 CREATE TABLE `familias` (
   `cod_familia` varchar(3) COLLATE utf8_spanish_ci NOT NULL,
   `nom_familia_eu` varchar(40) COLLATE utf8_spanish_ci NOT NULL,
@@ -406,7 +446,6 @@ INSERT INTO `familias` (`cod_familia`, `nom_familia_eu`, `nom_familia_es`) VALUE
 -- Estructura de tabla para la tabla `oferta`
 --
 
-DROP TABLE IF EXISTS `oferta`;
 CREATE TABLE `oferta` (
   `codigo` int(3) NOT NULL DEFAULT '0',
   `cod_ciclo` varchar(5) CHARACTER SET utf8 COLLATE utf8_spanish_ci DEFAULT NULL,
